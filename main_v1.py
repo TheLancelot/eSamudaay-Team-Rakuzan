@@ -12,6 +12,10 @@ import matplotlib.pyplot as plt
 import streamlit.components.v1 as components
 from streamlit_option_menu import option_menu
 
+html_string = "<meta property='og:image' content='Rakuzan.jpg' /> <meta property='og:image:type' content='jpg'><meta property='og:image:width' content='800'><meta property='og:image:height' content='450'>"
+
+st.markdown(html_string, unsafe_allow_html=True)
+
 
 class eSamudaay:
 
@@ -89,8 +93,9 @@ class eSamudaay:
             product_stats['%' + reason] = products_sum[reason]/inventory * 100
         product_stats = product_stats.reset_index()
         product_stats = product_stats.rename(columns={'index': 'product_name'})
-        product_stats.fillna(0, inplace = True)
+        product_stats.fillna(0, inplace=True)
         return product_stats
+
     def get_error_rate(self):
         total_inventory = self.get_inventory().sum()
         total_errors = self.data.drop(['sku_id', 'failure_reasons', ], axis=1).groupby(by='product_name').sum().sum(
@@ -109,7 +114,6 @@ class eSamudaay:
             return 2
         else:
             return 3
-
 
 
 def return_business_details(business_name):
@@ -151,10 +155,8 @@ def return_business_details(business_name):
 
 
 def main():
-    
-    hack = eSamudaay('output.json')
 
-    
+    hack = eSamudaay('output.json')
 
     with st.sidebar:
         st.write("Main Menu")
@@ -169,39 +171,39 @@ def main():
 
     st.header("Rakuzan Analysis")
     business_list = hack.get_business_names()
-    option = st.selectbox('Select a Business', business_list,index=55)
-    
+    option = st.selectbox('Select a Business', business_list, index=55)
+
     hack.get_company(option)
     fig = plt.figure(figsize=(15, 8))
     classification = hack.get_classification()
     st.subheader("Comments")
     if classification == 1:
         error_rate = hack.get_error_rate()
-        st.subheader(f"Issues per product: {error_rate:.2f}\nVery few problems per product")
+        st.subheader(
+            f"Issues per product: {error_rate:.2f}\nVery few problems per product")
     elif classification == 2:
         error_rate = hack.get_error_rate()
-        st.subheader(f"Issues per product: {error_rate:.2f}\nSome changes are needed. Every product has an issue.")
+        st.subheader(
+            f"Issues per product: {error_rate:.2f}\nSome changes are needed. Every product has an issue.")
     else:
         error_rate = hack.get_error_rate()
-        st.subheader(f"Issues per product: {error_rate:.2f}\nMajor changes need. Too many issues per product")
+        st.subheader(
+            f"Issues per product: {error_rate:.2f}\nMajor changes need. Too many issues per product")
     st.header('All products')
     proddf = hack.product_stats()
-    
 
     subset = [col for col in proddf.columns if col != 'product_name']
-    
-    st.dataframe(proddf.style.format(subset = subset, formatter = "{:.2f}"))
-    
-   
+
+    st.dataframe(proddf.style.format(subset=subset, formatter="{:.2f}"))
 
     st.header('Product Search Bar')
     prodlist = list(proddf['product_name'])
-    
+
     prodoption = st.selectbox('Select a Product', prodlist)
-    st.dataframe(proddf[proddf['product_name'] == prodoption].style.format(subset=subset, formatter="{:.2f}"))
+    st.dataframe(proddf[proddf['product_name'] == prodoption].style.format(
+        subset=subset, formatter="{:.2f}"))
     st.header("Business Analysis")
     st.header('Bar chart')
-    
 
     fig = plt.figure(figsize=(10, 4))
     sns.barplot(hack.get_inventory().head(7).index,
@@ -225,13 +227,15 @@ def main():
     plt.title("Failure Reason Distribution for overall business")
     st.pyplot(fig1)
     st.header("About the Team")
-    data = [['Yaswanth Biruduraju', 'MIT Manipal'], ['Nishad Khade', 'MIT Manipal'], 
-    ['Garvit Gopalani', 'MIT Manipal'], ['Mihir Agarwal', 'MIT Manipal'],
-    ['Prakhar Tripathi', 'MIT Manipal']]
-  
+    data = [['Yaswanth Biruduraju', 'MIT Manipal'], ['Nishad Khade', 'MIT Manipal'],
+            ['Garvit Gopalani', 'MIT Manipal'], [
+                'Mihir Agarwal', 'MIT Manipal'],
+            ['Prakhar Tripathi', 'MIT Manipal']]
+
     teamdetailsdf = pd.DataFrame(data, columns=['Name', 'Institute'])
-    
+
     st.write(teamdetailsdf)
+
 
 if __name__ == '__main__':
     main()
