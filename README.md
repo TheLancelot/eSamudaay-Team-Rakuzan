@@ -1,5 +1,10 @@
 # eSamudaay-Team-Rakuzan
 
+Made an API call to eSamudaay’s compliance report api, processed the response and prepared
+a user-friendly and effective UI to display the compliance report to necessary stakeholders.
+
+The API was called for multiple businesses whose business IDs were provided and report was display for each of them separately.
+
 ##Team Members
  - Yaswanth Biruduraju
  - Mihir Agarwal
